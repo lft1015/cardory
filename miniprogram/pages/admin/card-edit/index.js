@@ -98,28 +98,32 @@ Page({
 
   uploadImage(tempPath) {
     this.setData({ uploading: true });
-    const now = new Date();
-    const ym = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const fileName = `card-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-    const cloudPath = `card-drafts/${ym}/${fileName}`;
-
-    wx.cloud.uploadFile({
-      cloudPath,
-      filePath: tempPath,
-      success: (res) => {
+    return new Promise((resolve, reject) => {
+      wx.compressImage({
+        src: tempPath,
+        quality: 70,
+        success: ({ tempFilePath }) => wx.getFileSystemManager().readFile({
+          filePath: tempFilePath,
+          encoding: 'base64',
+          success: ({ data }) => resolve(data),
+          fail: reject
+        }),
+        fail: reject
+      });
+    }).then(base64 => callApi('adminUploadImage', { base64 }))
+      .then(({ fileId }) => {
         this.setData({
-          imageFileId: res.fileID,
+          imageFileId: fileId,
           imageUrl: '',
           uploading: false
         });
         wx.showToast({ title: '上传成功', icon: 'success' });
-      },
-      fail: (err) => {
+      })
+      .catch(err => {
         console.error('upload failed', err);
         this.setData({ uploading: false });
-        wx.showToast({ title: '上传失败', icon: 'none' });
-      }
-    });
+        wx.showToast({ title: err.message || '上传失败', icon: 'none' });
+      });
   },
 
   onCheckImage() {

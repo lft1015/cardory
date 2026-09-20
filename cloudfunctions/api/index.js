@@ -21,7 +21,11 @@ const drawService = createDrawService({
 });
 const bootstrapService = createBootstrapService({ repo, now: () => new Date() });
 const catalogService = createCatalogService({ repo });
-const adminService = createAdminService({ repo, securityClient: createSecurityClient({ cloud }) });
+const adminService = createAdminService({
+  repo,
+  securityClient: createSecurityClient({ cloud }),
+  imageUploader: (file) => cloud.uploadFile(file)
+});
 
 const route = createRouter({
   signIn: (payload, context) => signInService.execute({
@@ -44,6 +48,7 @@ const route = createRouter({
     openid: context.openid,
     rarityId: payload.rarityId
   }),
+  adminUploadImage: (payload, context) => adminService.uploadImage({ openid: context.openid, base64: payload.base64 }),
   adminCreateCard: (payload, context) => adminService.createCard({ openid: context.openid, card: payload.card }),
   adminUpdateCard: (payload, context) => adminService.updateCard({ openid: context.openid, cardId: payload.cardId, patch: payload.patch }),
   adminListCards: (payload, context) => adminService.listCards({ openid: context.openid }),

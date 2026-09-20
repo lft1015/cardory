@@ -4,8 +4,22 @@ const { validateRarityConfig } = require('../domain/config');
 const { isCardDrawable } = require('../domain/card-state');
 
 const RARITIES = new Set(['N', 'R', 'SR', 'SSR']);
+// Base64 adds about one third to the callFunction payload; keep headroom below its request limit.
+const MAX_UPLOAD_BYTES = 500 * 1024;
 
-function createAdminService({ repo, securityClient = null, now = () => new Date() }) {
+function decodeImage(base64) {
+  if (typeof base64 !== 'string' || !base64.length || base64.length % 4 || !/^[A-Za-z0-9+/]+={0,2}$/.test(base64)) {
+    throw new AppError('INVALID_IMAGE', '图片数据无效');
+  }
+  const buffer = Buffer.from(base64, 'base64');
+  if (buffer.length > MAX_UPLOAD_BYTES) throw new AppError('IMAGE_TOO_LARGE', '压缩后的图片不能超过500KB');
+  if (buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return { buffer, extension: 'png' };
+  if (buffer.subarray(0, 3).equals(Buffer.from([0xff, 0xd8, 0xff]))) return { buffer, extension: 'jpg' };
+  if (buffer.subarray(0, 4).toString('ascii') === 'GIF8') return { buffer, extension: 'gif' };
+  throw new AppError('INVALID_IMAGE', '仅支持PNG、JPG或GIF图片');
+}
+
+function createAdminService({ repo, securityClient = null, imageUploader = null, now = () => new Date() }) {
   async function requireAdmin(openid) {
     if (!(await repo.isAdminOpenid(openid))) {
       throw new AppError('FORBIDDEN', '无权限访问');
@@ -59,6 +73,18 @@ function createAdminService({ repo, securityClient = null, now = () => new Date(
     await repo.saveCard(created);
     await log(openid, 'CREATE_CARD', created._id);
     return created;
+  }
+
+  async function uploadImage({ openid, base64 }) {
+    await requireAdmin(openid);
+    if (typeof imageUploader !== 'function') throw new AppError('STORAGE_UNAVAILABLE', '图片存储服务不可用');
+    const { buffer, extension } = decodeImage(base64);
+    const ym = now().toISOString().slice(0, 7).replace('-', '');
+    const cloudPath = `card-drafts/${ym}/card-${crypto.randomUUID()}.${extension}`;
+    const result = await imageUploader({ cloudPath, fileContent: buffer });
+    if (!result?.fileID) throw new AppError('UPLOAD_FAILED', '图片上传失败');
+    await log(openid, 'UPLOAD_IMAGE', result.fileID);
+    return { fileId: result.fileID };
   }
 
   async function updateCard({ openid, cardId, patch }) {
@@ -174,7 +200,7 @@ function createAdminService({ repo, securityClient = null, now = () => new Date(
     return repo.findAdminLogs ? repo.findAdminLogs() : [];
   }
 
-  return { requireAdmin, createCard, updateCard, checkCardImage, confirmAuthorization, publishCard, publishRarityConfig, changeCardStatus, listCards, listAdminLogs };
+  return { requireAdmin, uploadImage, createCard, updateCard, checkCardImage, confirmAuthorization, publishCard, publishRarityConfig, changeCardStatus, listCards, listAdminLogs };
 }
 
 module.exports = { createAdminService };

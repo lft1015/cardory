@@ -4,12 +4,12 @@ const { createMemoryRepository } = require('../src/repositories/memory-repositor
 const { createAdminService } = require('../src/services/admin-service');
 const { AppError } = require('../src/errors');
 
-function setup() {
+function setup(options = {}) {
   const repo = createMemoryRepository();
   repo.addAdmin({ openid: 'admin' });
   repo.seedCards([]);
   const securityClient = { checkImage: async () => ({ passed: true, traceId: 'trace-1', reason: null }) };
-  return { repo, service: createAdminService({ repo, securityClient }) };
+  return { repo, service: createAdminService({ repo, securityClient, ...options }) };
 }
 
 test('non-admin cannot create or publish cards', async () => {
@@ -17,6 +17,58 @@ test('non-admin cannot create or publish cards', async () => {
   await assert.rejects(
     () => service.createCard({ openid: 'user', card: { name: 'A' } }),
     (err) => err instanceof AppError && err.code === 'FORBIDDEN'
+  );
+});
+
+test('admin image upload validates and stores the image on the server', async () => {
+  const image = Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    Buffer.from('card-image')
+  ]);
+  const { repo, service } = setup({
+    imageUploader: async ({ cloudPath, fileContent }) => {
+      assert.match(cloudPath, /^card-drafts\/\d{6}\/card-[a-f0-9-]+\.png$/);
+      assert.deepEqual(fileContent, image);
+      return { fileID: 'cloud://env/card-drafts/card.png' };
+    }
+  });
+
+  const result = await service.uploadImage({ openid: 'admin', base64: image.toString('base64') });
+
+  assert.deepEqual(result, { fileId: 'cloud://env/card-drafts/card.png' });
+  assert.equal(repo.snapshot().adminLogs.at(-1).action, 'UPLOAD_IMAGE');
+});
+
+test('non-admin cannot upload an image', async () => {
+  const { service } = setup({
+    imageUploader: async () => assert.fail('unauthorized upload reached cloud storage')
+  });
+
+  await assert.rejects(
+    () => service.uploadImage({ openid: 'user', base64: 'iVBORw0KGgo=' }),
+    (err) => err instanceof AppError && err.code === 'FORBIDDEN'
+  );
+});
+
+test('image upload rejects unsupported content', async () => {
+  const { service } = setup({ imageUploader: async () => assert.fail('invalid image reached cloud storage') });
+
+  await assert.rejects(
+    () => service.uploadImage({ openid: 'admin', base64: Buffer.from('not-an-image').toString('base64') }),
+    (err) => err instanceof AppError && err.code === 'INVALID_IMAGE'
+  );
+});
+
+test('image upload rejects files larger than 500KB', async () => {
+  const image = Buffer.concat([
+    Buffer.from([0xff, 0xd8, 0xff]),
+    Buffer.alloc(500 * 1024 - 2)
+  ]);
+  const { service } = setup({ imageUploader: async () => assert.fail('oversized image reached cloud storage') });
+
+  await assert.rejects(
+    () => service.uploadImage({ openid: 'admin', base64: image.toString('base64') }),
+    (err) => err instanceof AppError && err.code === 'IMAGE_TOO_LARGE'
   );
 });
 
