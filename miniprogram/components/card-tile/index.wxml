@@ -1,0 +1,25 @@
+<view class="card-tile size-{{size}} {{framed ? 'framed' : ''}}" bindtap="onTap">
+  <view class="card-frame rarity-{{card.rarity}}">
+    <view class="card-img-area">
+      <block wx:if="{{card.owned && card.imageUrl && !imgFailed}}">
+        <image
+          class="card-img"
+          src="{{card.imageUrl}}"
+          mode="aspectFill"
+          lazy-load="{{true}}"
+          binderror="onImageError" />
+      </block>
+      <block wx:elif="{{card.owned}}">
+        <view class="card-placeholder rarity-{{card.rarity}}">{{card.name}}</view>
+      </block>
+      <block wx:else>
+        <view class="card-ghost">
+          <view class="ghost-icon">✦</view>
+        </view>
+      </block>
+    </view>
+    <view wx:if="{{card.owned}}" class="card-count-badge">×{{card.count}}</view>
+    <view class="card-rarity-badge rarity-{{card.rarity}}">{{card.rarity}}</view>
+  </view>
+  <view class="card-name {{card.owned ? '' : 'no-own'}}">{{card.owned ? card.name : '???'}}</view>
+</view>

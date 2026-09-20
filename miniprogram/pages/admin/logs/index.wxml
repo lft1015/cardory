@@ -1,0 +1,25 @@
+<view wx:if="{{authorized}}" class="admin-page">
+  <view class="page-title">操作日志</view>
+  <view class="page-subtitle">记录管理员对卡牌与配置的操作</view>
+
+  <view wx:if="{{loading}}" class="state-card">加载中…</view>
+  <view wx:elif="{{!logs.length}}" class="state-card">{{message || '暂无操作日志'}}</view>
+  <view wx:else class="logs-list">
+    <view wx:for="{{logs}}" wx:key="index" class="log-card">
+      <view class="log-header">
+        <view class="log-action">{{item.actionLabel}}</view>
+        <view class="log-time">{{item.time}}</view>
+      </view>
+      <view class="log-fields">
+        <view wx:if="{{item.cardId}}" class="log-field">
+          <view class="log-field-label">卡牌 ID</view>
+          <view class="log-field-value log-card-id">{{item.cardId}}</view>
+        </view>
+        <view wx:if="{{item.detail}}" class="log-field">
+          <view class="log-field-label">操作详情</view>
+          <view class="log-field-value">{{item.detail}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

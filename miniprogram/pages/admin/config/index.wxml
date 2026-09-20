@@ -1,0 +1,48 @@
+<view wx:if="{{authorized}}" class="admin-page">
+  <view class="page-title">概率配置</view>
+  <view class="page-subtitle">设置各稀有度的抽取概率与保底规则</view>
+
+  <view class="section">
+    <view class="section-heading">
+      <view class="section-label">概率档位</view>
+      <view class="section-help">单位：基点</view>
+    </view>
+    <view wx:for="{{tiers}}" wx:key="id" class="field-group">
+      <view class="field-label">{{item.id}} 稀有度</view>
+      <view class="field-input-wrap">
+        <input
+          class="field-control rarity-{{item.id}}"
+          type="number"
+          data-index="{{index}}"
+          data-field="probabilityBps"
+          value="{{item.probabilityBps}}"
+          bindinput="onInput" />
+        <text class="field-unit">基点</text>
+      </view>
+    </view>
+    <view class="tip">四档合计必须为 10000</view>
+  </view>
+
+  <view class="section">
+    <view class="section-heading">
+      <view class="section-label">保底规则</view>
+      <view class="section-help">达到次数后提高稀有度</view>
+    </view>
+    <view class="field-group">
+      <view class="field-label">保底次数</view>
+      <view class="field-input-wrap">
+        <input
+          class="field-control"
+          type="number"
+          data-field="pityLimit"
+          value="{{pityLimit}}"
+          bindinput="onInput" />
+        <text class="field-unit">次</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="actions">
+    <button class="btn btn-primary" loading="{{saving}}" disabled="{{saving}}" bindtap="onPublish">发布配置</button>
+  </view>
+</view>

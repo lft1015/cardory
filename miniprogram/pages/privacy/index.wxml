@@ -1,0 +1,45 @@
+<view class="privacy">
+  <view class="floating-particles">
+    <view class="particle p1">❀</view>
+    <view class="particle p2">✦</view>
+    <view class="particle p3">✿</view>
+    <view class="particle p4">✧</view>
+    <view class="particle p5">❀</view>
+    <view class="particle p6">✦</view>
+    <view class="particle p7">✿</view>
+    <view class="particle p8">✧</view>
+    <view class="particle p9">❀</view>
+    <view class="particle p10">✦</view>
+    <view class="particle p11">✿</view>
+    <view class="particle p12">✧</view>
+    <view class="particle p13">❀</view>
+    <view class="particle p14">✦</view>
+    <view class="particle p15">✿</view>
+    <view class="particle p16">✧</view>
+  </view>
+
+  <view class="title">隐私说明</view>
+  <view class="updated">Cardory 体验版</view>
+
+  <view class="section">
+    <view class="heading">我们处理哪些信息</view>
+    <view class="text">为提供登录、签到、抽卡和卡册功能，我们仅处理微信身份标识、签到状态、抽卡余额、抽卡流水和个人收藏.</view>
+  </view>
+
+  <view class="section">
+    <view class="heading">我们不会采集</view>
+    <view class="text">我们不采集昵称、头像、手机号、通讯录或位置等与上述功能无关的信息.</view>
+  </view>
+
+  <view class="section">
+    <view class="heading">图片与授权</view>
+    <view class="text">管理员上传的人物图片须已取得必要授权，并经过内容安全检测。授权撤回或发现不适合展示时，相关卡牌会下架或移除.</view>
+  </view>
+
+  <view class="section">
+    <view class="heading">你的权利</view>
+    <view class="text">如需查询、更正或删除个人数据，请联系小程序运营方。正式上线前我们会根据微信平台当期规则更新本说明.</view>
+  </view>
+
+  <button class="back" bindtap="onBack">返回</button>
+</view>

@@ -1,0 +1,40 @@
+<view class="draw-result rarity-{{currentRarityClass}} {{phase}}" bindtap="onOverlayTap">
+  <view class="ambient">
+    <view class="ambient-orbit orbit-a"></view>
+    <view class="ambient-orbit orbit-b"></view>
+    <view class="ambient-bloom"></view>
+    <view class="ambient-speck speck-a"></view>
+    <view class="ambient-speck speck-b"></view>
+    <view class="ambient-speck speck-c"></view>
+  </view>
+
+  <view class="single-stage {{activeEffectClass}}">
+    <view class="effect-layer" aria-hidden="true">
+      <view class="effect-ring ring-a"></view>
+      <view class="effect-ring ring-b"></view>
+      <view class="effect-sweep"></view>
+      <view class="effect-burst"></view>
+      <view class="effect-flash"></view>
+    </view>
+    <view class="single-card rarity-{{currentRarityClass}} {{flipping ? 'is-flipping' : 'is-revealed'}}">
+      <view class="card-face card-back">
+        <view class="back-grid"></view>
+        <view class="back-mark">✦</view>
+        <view class="back-label">CARDORY</view>
+      </view>
+      <view wx:if="{{currentCard}}" class="card-face card-front">
+        <view class="card-frame"></view>
+        <image wx:if="{{currentCard.imageUrl}}" class="card-image" src="{{currentCard.imageUrl}}" mode="aspectFill" data-kind="current" binderror="onImageError" />
+        <view wx:else class="card-placeholder">{{currentCard.cardName}}</view>
+        <view class="card-meta">
+          <view class="card-rarity rarity-{{currentRarityClass}}">{{currentCard.rarity}}</view>
+          <view wx:if="{{currentCard.isNew}}" class="card-badge new">NEW</view>
+          <view wx:elif="{{currentCard.ownedCount > 1}}" class="card-badge owned">×{{currentCard.ownedCount}}</view>
+        </view>
+        <view class="card-name">{{currentCard.cardName}}</view>
+      </view>
+      <view class="card-glint"></view>
+    </view>
+  </view>
+
+</view>

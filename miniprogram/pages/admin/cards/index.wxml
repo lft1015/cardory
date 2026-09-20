@@ -1,0 +1,65 @@
+<view wx:if="{{authorized}}" class="admin-page">
+  <view class="page-title">卡牌管理</view>
+  <view class="toolbar">
+    <button class="tb-btn tb-btn-primary" bindtap="onCreate">新建卡牌</button>
+    <button class="tb-btn tb-btn-ghost" bindtap="onConfig">概率配置</button>
+    <button class="tb-btn tb-btn-ghost" bindtap="onLogs">操作日志</button>
+  </view>
+
+  <view wx:if="{{loading}}" class="hint">加载中…</view>
+  <view wx:elif="{{items.length === 0}}" class="hint">
+    暂无卡牌，点击"新建卡牌"创建第一张
+  </view>
+  <view wx:else class="card-list">
+    <view wx:for="{{items}}" wx:key="_id" class="card-row rarity-{{item.rarity}} {{item.status === 'FORCE_REMOVED' ? 'removed' : ''}}">
+      <view class="row-thumb">
+        <image
+          wx:if="{{item.imageUrl}}"
+          class="row-thumb-img"
+          src="{{item.imageUrl}}"
+          mode="aspectFill" />
+        <view wx:else class="row-thumb-place">
+          <text class="row-thumb-rarity rarity-{{item.rarity}}">{{item.rarity}}</text>
+        </view>
+      </view>
+      <view class="row-body">
+        <view class="row-header">
+          <view class="row-name">{{item.name || '未命名'}}</view>
+        </view>
+        <view class="row-meta">
+          <text class="meta-tag meta-rarity rarity-{{item.rarity}}">{{item.rarity}}</text>
+          <text class="meta-tag">{{item.type === 'LIMITED' ? '限定' : '常驻'}}</text>
+          <text class="meta-tag">权重 {{item.weight}}</text>
+        </view>
+        <view wx:if="{{item.status === 'FORCE_REMOVED' && item.removalReason}}" class="row-reason">
+          原因：{{item.removalReason}}
+        </view>
+      </view>
+      <view class="row-actions">
+        <block wx:if="{{item.status !== 'FORCE_REMOVED'}}">
+          <button size="mini" class="row-btn" data-card-id="{{item._id}}" bindtap="onEdit">编辑</button>
+          <button
+            wx:if="{{item.status === 'PUBLISHABLE'}}"
+            size="mini"
+            class="row-btn publish"
+            data-card-id="{{item._id}}"
+            bindtap="onPublish">发布</button>
+          <button
+            wx:if="{{item.status === 'PUBLISHED'}}"
+            size="mini"
+            class="row-btn warn"
+            data-card-id="{{item._id}}"
+            bindtap="onOffline">下架</button>
+          <button
+            size="mini"
+            class="row-btn danger"
+            data-card-id="{{item._id}}"
+            bindtap="onForceRemove">移除</button>
+        </block>
+        <block wx:else>
+          <view class="removed-hint">已移除</view>
+        </block>
+      </view>
+    </view>
+  </view>
+</view>

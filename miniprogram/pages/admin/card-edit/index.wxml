@@ -1,0 +1,133 @@
+<view wx:if="{{authorized}}" class="admin-page">
+  <view class="page-title">{{editMode ? '编辑卡牌' : '新建卡牌'}}</view>
+
+  <view class="section image-section">
+    <view class="section-heading">
+      <view class="section-label">卡面图片</view>
+      <view class="section-help">点击图片选择或更换</view>
+    </view>
+    <view class="image-area" bindtap="onChooseImage">
+      <block wx:if="{{imageFileId || imageUrl}}">
+        <image
+          wx:if="{{imageFileId}}"
+          class="preview-img"
+          src="{{imageFileId}}"
+          mode="aspectFill" />
+        <image
+          wx:elif="{{imageUrl}}"
+          class="preview-img"
+          src="{{imageUrl}}"
+          mode="aspectFill" />
+      </block>
+      <block wx:else>
+        <view class="upload-placeholder">
+          <view class="upload-icon">+</view>
+          <view class="upload-text">{{uploading ? '上传中…' : '点击选择图片'}}</view>
+        </view>
+      </block>
+    </view>
+    <view class="image-hint">{{uploading ? '图片上传中…' : '支持从相册选择或直接拍摄'}}</view>
+  </view>
+
+  <view class="section form-section">
+    <view class="section-heading">
+      <view class="section-label">基本信息</view>
+      <view class="section-help">完善后保存为草稿</view>
+    </view>
+
+    <view class="field-group">
+      <view class="field-label">卡牌名称</view>
+      <input class="field-control" placeholder="请输入卡牌名称" data-field="name" value="{{name}}" bindinput="onInput" />
+    </view>
+
+    <view class="field-group">
+      <view class="field-label">稀有度</view>
+      <picker range="{{rarities}}" bindchange="onRarityChange">
+        <view class="field-control picker-control">
+          <text class="rarity-{{rarity}}">{{rarity}}</text>
+          <text class="field-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="field-group">
+      <view class="field-label">抽取权重</view>
+      <input class="field-control" type="number" placeholder="请输入正整数" data-field="weight" value="{{weight}}" bindinput="onInput" />
+    </view>
+
+    <view class="field-group">
+      <view class="field-label">卡牌类型</view>
+      <picker range="{{['常驻', '限定']}}" bindchange="onTypeChange">
+        <view class="field-control picker-control">
+          <text>{{type === 'LIMITED' ? '限定' : '常驻'}}</text>
+          <text class="field-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <block wx:if="{{type === 'LIMITED'}}">
+      <view class="field-group">
+        <view class="field-label">限定开始时间</view>
+        <input class="field-control" placeholder="如 2026-09-20 00:00" data-field="startsAt" value="{{startsAt}}" bindinput="onInput" />
+      </view>
+      <view class="field-group">
+        <view class="field-label">限定结束时间</view>
+        <input class="field-control" placeholder="如 2026-10-20 00:00" data-field="endsAt" value="{{endsAt}}" bindinput="onInput" />
+      </view>
+    </block>
+  </view>
+
+  <view class="section status-section" wx:if="{{editMode}}">
+    <view class="section-heading">
+      <view class="section-label">审核状态</view>
+      <view class="section-help">发布前需要完成审核</view>
+    </view>
+    <view class="status-bar">
+      <view class="status-chip" style="background: {{statusColor}}">{{statusLabel}}</view>
+      <view wx:if="{{securityPassed}}" class="status-chip ok">检测通过</view>
+      <view wx:elif="{{status === 'CHECKING'}}" class="status-chip pending">检测中…</view>
+      <view wx:if="{{authorizationConfirmed}}" class="status-chip ok">已授权</view>
+    </view>
+  </view>
+
+  <view class="actions">
+    <button class="btn btn-primary" bindtap="onSave" loading="{{saving}}" disabled="{{saving}}">
+      {{editMode ? '保存修改' : '创建草稿'}}
+    </button>
+
+    <block wx:if="{{editMode}}">
+      <button
+        wx:if="{{imageFileId && status !== 'PUBLISHED'}}"
+        class="btn btn-outline"
+        bindtap="onCheckImage"
+        loading="{{checking}}"
+        disabled="{{checking}}">
+        图片安全检测
+      </button>
+      <button
+        wx:if="{{securityPassed && !authorizationConfirmed}}"
+        class="btn btn-outline"
+        bindtap="onConfirmAuthorization">
+        确认肖像授权
+      </button>
+      <button
+        wx:if="{{status === 'PUBLISHABLE'}}"
+        class="btn btn-primary"
+        bindtap="onPublish">
+        发布上架
+      </button>
+      <button
+        wx:if="{{status === 'PUBLISHED'}}"
+        class="btn btn-warn"
+        bindtap="onOffline">
+        下架
+      </button>
+      <button
+        wx:if="{{status !== 'FORCE_REMOVED'}}"
+        class="btn btn-danger"
+        bindtap="onForceRemove">
+        强制移除
+      </button>
+    </block>
+  </view>
+</view>

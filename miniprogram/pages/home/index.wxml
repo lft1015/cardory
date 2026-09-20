@@ -1,0 +1,97 @@
+<view class="home">
+  <view class="floating-particles">
+    <view class="particle p1">❀</view>
+    <view class="particle p2">✦</view>
+    <view class="particle p3">✿</view>
+    <view class="particle p4">✧</view>
+    <view class="particle p5">❀</view>
+    <view class="particle p6">✦</view>
+    <view class="particle p7">✿</view>
+    <view class="particle p8">✧</view>
+    <view class="particle p9">❀</view>
+    <view class="particle p10">✦</view>
+    <view class="particle p11">✿</view>
+    <view class="particle p12">✧</view>
+    <view class="particle p13">❀</view>
+    <view class="particle p14">✦</view>
+    <view class="particle p15">✿</view>
+    <view class="particle p16">✧</view>
+  </view>
+  <view class="header">
+    <view class="header-left">
+      <view class="title">Cardory</view>
+      <view class="subtitle">春有百花秋有月，夏有凉风冬有雪</view>
+    </view>
+    <view class="sign-in-area">
+      <block wx:if="{{!signedToday}}">
+        <view
+          class="btn-sign {{signInStatus === 'loading' ? 'loading' : ''}}"
+          bindtap="onSignIn">
+          <block wx:if="{{!sessionReady && sessionError}}">重试</block>
+          <block wx:elif="{{!sessionReady}}">…</block>
+          <block wx:elif="{{signInStatus === 'loading'}}">…</block>
+          <block wx:elif="{{signInStatus === 'error'}}">重试</block>
+          <block wx:else>签到</block>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="signed-badge">已签</view>
+      </block>
+    </view>
+  </view>
+
+  <view class="credit-bar">
+    <view class="credit-label">剩余次数</view>
+    <view class="credit-number">{{drawCredits}}</view>
+  </view>
+
+  <view class="pool-cover">
+    <view class="pool-banner">
+      <view class="pool-banner-bg"></view>
+      <view class="pool-sparkles">
+        <view class="sparkle s1">✦</view>
+        <view class="sparkle s2">✧</view>
+        <view class="sparkle s3">✦</view>
+        <view class="sparkle s4">✧</view>
+        <view class="sparkle s5">✦</view>
+      </view>
+      <view class="pool-frame">
+        <view class="pool-frame-outer">
+          <view class="pool-frame-inner">
+            <view class="pool-card-back">
+              <view class="pool-card-pattern">
+                <view class="pattern-line"></view>
+                <view class="pattern-line"></view>
+                <view class="pattern-line"></view>
+                <view class="pattern-line"></view>
+                <view class="pattern-line"></view>
+              </view>
+              <view class="pool-emblem">
+                <view class="emblem-ring"></view>
+                <view class="emblem-star">✦</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="pool-info">
+        <view class="pool-label">本期卡池</view>
+        <view class="pool-name">常驻卡池 · 经典收藏</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="actions">
+    <button class="btn-draw btn-primary" disabled="{{!sessionReady || drawLoading}}" bindtap="onDraw">
+      抽一张
+    </button>
+  </view>
+
+  <view class="bottom-nav">
+    <view class="nav-item" bindtap="onGoAlbum">卡册</view>
+    <view class="nav-item" bindtap="onGoPrivacy">隐私说明</view>
+    <view class="nav-item" wx:if="{{isAdmin}}" bindtap="onGoAdmin">管理</view>
+  </view>
+
+  <draw-result wx:if="{{showResult}}" results="{{drawResults}}" bind:close="onCloseResult" />
+</view>

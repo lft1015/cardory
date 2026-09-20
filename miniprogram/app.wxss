@@ -1,0 +1,44 @@
+page {
+  --color-bg: #f5faf6;
+  --color-card: #ffffff;
+  --color-text: #2e3b30;
+  --color-subtle: #7d9a83;
+  --color-primary: #6db87d;
+  --color-primary-dark: #4a8a5c;
+  --color-accent: #a8d5b0;
+  --color-n: #6a9b5b;
+  --color-r: #5b8cc9;
+  --color-sr: #8b5cb8;
+  --color-ssr: #c9a02b;
+  --radius: 16rpx;
+
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+
+.rarity-N { color: var(--color-n); }
+.rarity-R { color: var(--color-r); }
+.rarity-SR { color: var(--color-sr); }
+.rarity-SSR { color: var(--color-ssr); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: #fff;
+  border-radius: 48rpx;
+  font-size: 30rpx;
+  letter-spacing: 2rpx;
+}
+
+.btn-primary[disabled] {
+  opacity: 0.45;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-primary-dark);
+  border: 2rpx solid var(--color-primary);
+  border-radius: 48rpx;
+  font-size: 28rpx;
+}

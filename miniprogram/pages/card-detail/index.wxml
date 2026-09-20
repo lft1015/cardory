@@ -1,0 +1,19 @@
+<view class="detail">
+  <view class="detail-card rarity-{{rarity}}">
+    <image
+      wx:if="{{imageUrl}}"
+      class="detail-img"
+      src="{{imageUrl}}"
+      mode="aspectFill"
+      binderror="onImageError" />
+    <view wx:else class="detail-placeholder rarity-{{rarity}}">
+      <view class="placeholder-name">{{name}}</view>
+    </view>
+  </view>
+
+  <view class="detail-info">
+    <view class="detail-name">{{name}}</view>
+    <view class="detail-rarity rarity-{{rarity}}">{{rarity}}</view>
+    <view class="detail-count">拥有数量：{{count}}</view>
+  </view>
+</view>

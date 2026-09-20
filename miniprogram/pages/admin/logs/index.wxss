@@ -1,0 +1,91 @@
+.admin-page {
+  min-height: 100vh;
+  padding: 40rpx 32rpx 160rpx;
+  background: var(--color-bg);
+  box-sizing: border-box;
+}
+
+.page-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  margin-bottom: 12rpx;
+}
+
+.page-subtitle {
+  color: var(--color-subtle);
+  font-size: 24rpx;
+  margin-bottom: 44rpx;
+}
+
+.state-card {
+  padding: 56rpx 32rpx;
+  color: var(--color-subtle);
+  background: var(--color-card);
+  border-radius: 20rpx;
+  text-align: center;
+  font-size: 28rpx;
+}
+
+.logs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.log-card {
+  background: var(--color-card);
+  border-radius: 20rpx;
+  padding: 24rpx 28rpx;
+  box-shadow: 0 6rpx 20rpx rgba(46, 59, 48, 0.04);
+}
+
+.log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16rpx;
+  padding-bottom: 20rpx;
+  margin-bottom: 20rpx;
+  border-bottom: 1rpx solid rgba(46, 59, 48, 0.08);
+}
+
+.log-action {
+  font-weight: 700;
+  font-size: 28rpx;
+}
+
+.log-time {
+  font-size: 24rpx;
+  color: var(--color-subtle);
+  white-space: nowrap;
+}
+
+.log-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.log-field {
+  padding: 16rpx 20rpx;
+  background: var(--color-bg);
+  border-radius: 14rpx;
+}
+
+.log-field-label {
+  margin-bottom: 6rpx;
+  color: var(--color-subtle);
+  font-size: 22rpx;
+}
+
+.log-field-value {
+  color: var(--color-text);
+  font-size: 25rpx;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.log-card-id {
+  font-family: monospace;
+  word-break: break-all;
+}

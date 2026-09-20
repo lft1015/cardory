@@ -1,0 +1,93 @@
+<view class="album">
+  <view class="floating-particles">
+    <view class="particle p1">❀</view>
+    <view class="particle p2">✦</view>
+    <view class="particle p3">✿</view>
+    <view class="particle p4">✧</view>
+    <view class="particle p5">❀</view>
+    <view class="particle p6">✦</view>
+    <view class="particle p7">✿</view>
+    <view class="particle p8">✧</view>
+  </view>
+
+  <view class="album-hero">
+    <view class="hero-orb hero-orb-a"></view>
+    <view class="hero-orb hero-orb-b"></view>
+    <view class="album-header">
+      <view class="album-kicker">MEMORY COLLECTION</view>
+      <view class="album-title">回忆卡册</view>
+      <view class="album-subtitle">收集心爱的卡牌，记录每一份惊喜</view>
+    </view>
+    <view class="album-progress">
+      <view class="progress-summary">
+        <view class="progress-label">收集进度</view>
+        <view class="progress-text">
+          <text class="progress-num">{{collectedUnique}}</text>
+          <text class="progress-div">/</text>
+          <text class="progress-total">{{totalCollectible}}</text>
+        </view>
+      </view>
+      <view class="progress-percent">{{collectionPercent}}%</view>
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{collectionPercent}}%"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="filter-shell">
+    <view class="filter-bar">
+      <view
+        wx:for="{{filters}}"
+        wx:key="value"
+        class="filter-chip {{activeFilter === item.value ? 'active' : ''}} {{activeFilter === item.value ? 'rarity-' + item.value : ''}}"
+        data-value="{{item.value}}"
+        bindtap="onFilterTap">
+        {{item.label}}
+      </view>
+    </view>
+  </view>
+
+  <view class="card-grid">
+    <view wx:for="{{items}}" wx:key="cardId" class="card-cell">
+      <card-tile card="{{item}}" size="normal" framed bind:tap="onCardTap" />
+    </view>
+  </view>
+
+  <view wx:if="{{items.length === 0}}" class="empty-hint">
+    <view class="empty-icon">✦</view>
+    <view class="empty-title">这页还没有回忆</view>
+    <view class="empty-copy">试试其他稀有度</view>
+  </view>
+
+  <view wx:if="{{selectedCard}}" class="detail-panel" catchtap="closeCardDetail">
+    <view class="detail-halo rarity-{{selectedCard.rarity}}"></view>
+    <view class="detail-particles">
+      <view class="dparticle dp1">❀</view>
+      <view class="dparticle dp2">✦</view>
+      <view class="dparticle dp3">✿</view>
+      <view class="dparticle dp4">✧</view>
+    </view>
+    <view class="detail-content" catchtap="noop">
+      <view class="detail-toolbar">
+        <view class="detail-eyebrow">珍藏回忆</view>
+        <view class="detail-close" bindtap="closeCardDetail" aria-label="关闭">×</view>
+      </view>
+      <view class="detail-image-wrap rarity-{{selectedCard.rarity}}">
+        <view class="detail-frame rarity-{{selectedCard.rarity}}">
+          <image
+            wx:if="{{selectedCard.imageUrl}}"
+            class="detail-image"
+            src="{{selectedCard.imageUrl}}"
+            mode="aspectFill"
+            binderror="onDetailImageError" />
+          <view wx:else class="detail-image-placeholder">{{selectedCard.name}}</view>
+          <view class="detail-rarity-chip rarity-{{selectedCard.rarity}}">{{selectedCard.rarity}}</view>
+        </view>
+      </view>
+      <view class="detail-caption">
+        <view class="detail-name">{{selectedCard.name}}</view>
+        <view class="detail-count">拥有 ×{{selectedCard.count}}</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,9 @@
+{
+  "pages": ["pages/home/index", "pages/album/index", "pages/card-detail/index", "pages/privacy/index", "pages/admin/cards/index", "pages/admin/card-edit/index", "pages/admin/config/index", "pages/admin/logs/index"],
+  "window": {
+    "navigationBarTitleText": "Cardory",
+    "navigationBarBackgroundColor": "#f5faf6",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f5faf6"
+  }
+}
