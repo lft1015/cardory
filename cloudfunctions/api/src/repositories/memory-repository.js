@@ -31,7 +31,7 @@ function createMemoryRepository() {
       const user = {
         _id: crypto.randomUUID(),
         openid,
-        drawCredits: 0,
+        drawCredits: 20,
         pityCount: 0,
         lastSignInDate: null,
         createdAt: new Date()

@@ -2,15 +2,22 @@ const { AppError } = require('../errors');
 
 const FORCED_REMOVED = 'FORCE_REMOVED';
 
-function createCatalogService({ repo }) {
+function createCatalogService({ repo, onTiming }) {
   return {
     async listAlbum({ openid, rarityId }) {
-      const user = await repo.findUserByOpenid(openid);
+      const startedAt = Date.now();
+      const lookupsStartedAt = Date.now();
+      const [user, allCards] = await Promise.all([
+        repo.findUserByOpenid(openid),
+        repo.findAllCards()
+      ]);
+      const userAndCardsMs = Date.now() - lookupsStartedAt;
       if (!user) {
         throw new AppError('SESSION_NOT_READY', '会话尚未初始化');
       }
-      const allCards = await repo.findAllCards();
+      const collectionStartedAt = Date.now();
       const userCollection = await repo.findUserCollection(user._id);
+      const collectionMs = Date.now() - collectionStartedAt;
       const ownedMap = new Map();
       for (const entry of userCollection) {
         ownedMap.set(entry.cardId, entry.count);
@@ -39,7 +46,7 @@ function createCatalogService({ repo }) {
             cardId: card._id,
             name: card.name,
             rarity: card.rarity,
-            imageUrl: repo.getPublicImageUrl ? await repo.getPublicImageUrl(card.imageUrl) : (card.imageUrl || null),
+            imageUrl: card.imageUrl || null,
             owned: true,
             count: ownedMap.get(card._id)
           });
@@ -72,6 +79,9 @@ function createCatalogService({ repo }) {
         }
       }
 
+      if (onTiming) {
+        onTiming({ userAndCardsMs, collectionMs, totalMs: Date.now() - startedAt });
+      }
       return { items, collectedUnique, totalCollectible };
     }
   };

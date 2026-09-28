@@ -37,6 +37,10 @@
       <block wx:else>
         <view class="signed-badge">已签</view>
       </block>
+      <view class="games-entry" bindtap="onGoGames">
+        <view class="games-entry-icon">✦</view>
+        <view>游戏</view>
+      </view>
     </view>
   </view>
 

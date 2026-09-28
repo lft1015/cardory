@@ -1,21 +1,34 @@
 const { beijingDateKey } = require('../domain/time');
 
-function createBootstrapService({ repo, now }) {
+function createBootstrapService({ repo, now, onTiming }) {
   return {
     async execute({ openid }) {
-      const isAdmin = await repo.isAdminOpenid(openid);
+      const startedAt = Date.now();
+      const lookupsStartedAt = Date.now();
+      const [isAdmin, existingUser] = await Promise.all([
+        repo.isAdminOpenid(openid),
+        repo.findUserByOpenid(openid)
+      ]);
+      const lookupsMs = Date.now() - lookupsStartedAt;
 
-      let user = await repo.findUserByOpenid(openid);
+      let user = existingUser;
+      let createUserMs = 0;
       if (!user) {
+        const createStartedAt = Date.now();
         user = await repo.createUser(openid);
+        createUserMs = Date.now() - createStartedAt;
       }
 
-      return {
+      const result = {
         userId: user._id,
         drawCredits: user.drawCredits,
         signedToday: user.lastSignInDate === beijingDateKey(now()),
         isAdmin
       };
+      if (onTiming) {
+        onTiming({ lookupsMs, createUserMs, totalMs: Date.now() - startedAt });
+      }
+      return result;
     }
   };
 }

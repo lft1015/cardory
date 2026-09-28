@@ -1,4 +1,5 @@
 function callApi(action, payload = {}) {
+  const startedAt = Date.now();
   return wx.cloud.callFunction({ name: 'api', data: { action, payload } })
     .then(res => {
       const result = res && res.result;
@@ -9,6 +10,11 @@ function callApi(action, payload = {}) {
         throw err;
       }
       return result.data;
+    })
+    .finally(() => {
+      if ((action === 'bootstrap' || action === 'catalog') && typeof console !== 'undefined' && console.info) {
+        console.info('[perf] api', { action, durationMs: Date.now() - startedAt });
+      }
     });
 }
 

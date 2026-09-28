@@ -13,14 +13,22 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 
 const db = cloud.database();
 const repo = createCloudRepository(db, cloud);
+const logPerformance = (stage, timings) => console.info(`[perf] ${stage}`, timings);
 
 const signInService = createSignInService({ repo, now: () => new Date() });
 const drawService = createDrawService({
   repo,
   randomInt: (maxExclusive) => crypto.randomInt(0, maxExclusive)
 });
-const bootstrapService = createBootstrapService({ repo, now: () => new Date() });
-const catalogService = createCatalogService({ repo });
+const bootstrapService = createBootstrapService({
+  repo,
+  now: () => new Date(),
+  onTiming: (timings) => logPerformance('bootstrap', timings)
+});
+const catalogService = createCatalogService({
+  repo,
+  onTiming: (timings) => logPerformance('catalog', timings)
+});
 const adminService = createAdminService({
   repo,
   securityClient: createSecurityClient({ cloud }),

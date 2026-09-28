@@ -109,12 +109,3 @@
   color: var(--color-subtle);
   text-indent: 2em;
 }
-
-.back {
-  position: fixed;
-  bottom: 48rpx;
-  left: 40rpx;
-  right: 40rpx;
-  color: var(--color-primary-dark);
-  background: var(--color-card);
-}

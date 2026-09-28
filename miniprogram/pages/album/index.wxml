@@ -47,13 +47,18 @@
     </view>
   </view>
 
-  <view class="card-grid">
-    <view wx:for="{{items}}" wx:key="cardId" class="card-cell">
-      <card-tile card="{{item}}" size="normal" framed bind:tap="onCardTap" />
+  <view wx:if="{{albumLoading}}" class="album-loading">
+    <view class="loading-spinner"></view>
+    <view class="loading-text">正在加载卡册…</view>
+  </view>
+
+  <view wx:if="{{!albumLoading}}" class="card-grid">
+      <view wx:for="{{items}}" wx:key="cardId" class="card-cell">
+        <card-tile card="{{item}}" size="normal" framed style="flex: 1; min-width: 0;" bind:tap="onCardTap" bind:imageerror="onCardImageError" />
     </view>
   </view>
 
-  <view wx:if="{{items.length === 0}}" class="empty-hint">
+  <view wx:if="{{!albumLoading && items.length === 0}}" class="empty-hint">
     <view class="empty-icon">✦</view>
     <view class="empty-title">这页还没有回忆</view>
     <view class="empty-copy">试试其他稀有度</view>

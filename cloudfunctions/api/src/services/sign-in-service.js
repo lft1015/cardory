@@ -43,7 +43,7 @@ function createSignInService({ repo, now }) {
         }
 
         currentUser.lastSignInDate = dateKey;
-        currentUser.drawCredits += 1;
+        currentUser.drawCredits += 10;
 
         const result = { signed: true, drawCredits: currentUser.drawCredits, dateKey };
         await repo.saveOperationRecord(requestHash, 'signIn', currentUser._id, result);

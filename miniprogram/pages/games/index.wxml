@@ -1,0 +1,27 @@
+<view class="games-page">
+  <view class="games-hero">
+    <view class="games-kicker">CARDORY PLAYGROUND</view>
+    <view class="games-title">游戏</view>
+    <view class="games-subtitle">休闲时刻，收集一点小小的快乐</view>
+  </view>
+
+  <view class="games-list">
+    <view class="game-item">
+      <view class="game-icon game-icon-watermelon">●</view>
+      <view class="game-copy">
+        <view class="game-name">合成大西瓜</view>
+        <view class="game-description">合并相同的水果，让小西瓜一步步变成大西瓜</view>
+      </view>
+      <view class="game-status">即将开放</view>
+    </view>
+
+    <view class="game-item">
+      <view class="game-icon game-icon-luck">✦</view>
+      <view class="game-copy">
+        <view class="game-name">幸运消消乐</view>
+        <view class="game-description">消除相同图案，连得越多，收获的好运越多</view>
+      </view>
+      <view class="game-status">即将开放</view>
+    </view>
+  </view>
+</view>

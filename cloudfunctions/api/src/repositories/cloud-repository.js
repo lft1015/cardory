@@ -22,7 +22,7 @@ function createCloudRepository(db, cloud) {
       const user = {
         _id: randomUUID(),
         openid,
-        drawCredits: 0,
+        drawCredits: 20,
         pityCount: 0,
         lastSignInDate: null,
         createdAt: new Date()
@@ -162,16 +162,30 @@ function createCloudRepository(db, cloud) {
       });
     },
 
+    async getPublicImageUrls(fileIds) {
+      const ids = [...new Set((fileIds || []).filter(Boolean))];
+      if (!ids.length) return new Map();
+      if (!cloud || typeof cloud.getTempFileURL !== 'function') {
+        return new Map(ids.map((id) => [id, id]));
+      }
+      try {
+        const batches = Array.from({ length: Math.ceil(ids.length / 50) }, (_, index) =>
+          ids.slice(index * 50, index * 50 + 50)
+        );
+        const results = await Promise.all(batches.map((fileList) => cloud.getTempFileURL({ fileList })));
+        const resolved = new Map(results.flatMap((result) =>
+          (result.fileList || []).map((item) => [item.fileID, item.tempFileURL || null])
+        ));
+        return new Map(ids.map((id) => [id, resolved.get(id) || null]));
+      } catch (error) {
+        return new Map(ids.map((id) => [id, null]));
+      }
+    },
+
     async getPublicImageUrl(fileId) {
       if (!fileId) return null;
-      if (!cloud || typeof cloud.getTempFileURL !== 'function') return fileId;
-      try {
-        const result = await cloud.getTempFileURL({ fileList: [fileId] });
-        const item = result.fileList && result.fileList[0];
-        return item && item.tempFileURL ? item.tempFileURL : null;
-      } catch (error) {
-        return null;
-      }
+      const urls = await this.getPublicImageUrls([fileId]);
+      return urls.get(fileId) || null;
     },
 
     async findAdminLogs() {

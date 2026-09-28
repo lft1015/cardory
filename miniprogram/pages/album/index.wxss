@@ -211,13 +211,40 @@ page {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: 24rpx 20rpx;
 }
 
 .card-cell {
   display: flex;
   justify-content: center;
-  width: calc(50% - 10rpx);
+  box-sizing: border-box;
+  width: 50%;
+  min-width: 0;
+  padding: 0 10rpx 24rpx;
+}
+
+.album-loading {
+  min-height: 420rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-subtle);
+}
+
+.loading-spinner {
+  width: 54rpx;
+  height: 54rpx;
+  margin-bottom: 18rpx;
+  border: 5rpx solid rgba(109, 184, 125, 0.2);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: albumSpin 0.8s linear infinite;
+}
+
+.loading-text { font-size: 24rpx; }
+
+@keyframes albumSpin {
+  to { transform: rotate(360deg); }
 }
 
 .empty-hint {
@@ -442,5 +469,6 @@ page {
 @media (prefers-reduced-motion: reduce) {
   .particle,
   .dparticle,
-  .detail-content { animation: none; }
+  .detail-content,
+  .loading-spinner { animation: none; }
 }

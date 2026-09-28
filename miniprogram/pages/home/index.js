@@ -76,7 +76,7 @@ Page({
           signInStatus: 'done'
         });
         if (data.signed) {
-          wx.showToast({ title: '+1', icon: 'success', duration: 1200 });
+          wx.showToast({ title: '+10', icon: 'success', duration: 1200 });
         }
       })
       .catch(err => {
@@ -138,6 +138,10 @@ Page({
 
   onGoPrivacy() {
     wx.navigateTo({ url: '/pages/privacy/index' });
+  },
+
+  onGoGames() {
+    wx.navigateTo({ url: '/pages/games/index' });
   },
 
   onGoAdmin() {

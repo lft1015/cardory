@@ -27,6 +27,7 @@ Component({
   methods: {
     onImageError() {
       this.setData({ imgFailed: true });
+      this.triggerEvent('imageerror', { cardId: this.data.card.cardId });
     },
 
     onTap() {

@@ -52,5 +52,4 @@
     <view class="text">如需查询、更正或删除个人数据，请添加微信 l1809233970，并注明“Cardory 数据申请”及具体请求。运营者核实身份后处理；删除后，相关签到、抽卡记录和卡册数据不可恢复。</view>
   </view>
 
-  <button class="back" bindtap="onBack">返回</button>
 </view>
